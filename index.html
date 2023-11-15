@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticket Preview</title>
+  </head>
+  <body>
+    <form id="ticket-form">
+      <!-- Your form fields go here -->
+      <label for="bgFile">Choose a background file:</label>
+      <input
+        type="file"
+        id="bgFile"
+        name="bgFile"
+        accept="image/png, image/jpeg"
+        required
+      />
+      <label for="BarcodeContent">Enter BarcodeContent:</label>
+      <input type="text" id="BarcodeContent" name="BarcodeContent" required />
+
+      <label for="Id">Enter Id:</label>
+      <input type="text" id="Id" name="Id" required />
+      <button type="button" id="preview-button">Preview</button>
+    </form>
+    <iframe id="ticket-preview" style="width: 100%; height: 600px"></iframe>
+
+    <script>
+      document
+        .getElementById("preview-button")
+        .addEventListener("click", function () {
+          var form = document.getElementById("ticket-form");
+          var formData = new FormData(form);
+
+          fetch("https://localhost:7104/api/PdfTemplate/createPdf", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.blob())
+            .then((blob) => {
+              // Create a local URL for the blob object
+              var url = window.URL.createObjectURL(blob);
+              var iframe = document.getElementById("ticket-preview");
+              iframe.src = url;
+            })
+            .catch((err) => console.error(err));
+        });
+    </script>
+  </body>
+</html>
